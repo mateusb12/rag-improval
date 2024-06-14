@@ -2,7 +2,7 @@ import random, string
 from typing import List
 
 from raptor import Node, Tree
-from visualize_core import visualize_tree_structure
+from tests.visualize_core import visualize_tree_structure
 
 
 def prep():
