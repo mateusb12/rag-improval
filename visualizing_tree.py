@@ -4,30 +4,28 @@ import networkx as nx
 from pyvis.network import Network
 
 
+def extract_edges(tree):
+    edges = []
+    for node_index, node in tree.all_nodes.items():
+        for child_index in node.children:
+            edges.append((node_index, child_index))
+    return edges
+
+
 def tree_to_graph(tree):
-    G = nx.DiGraph()
+    graph = nx.DiGraph()
+    edges = extract_edges(tree)
 
     # Add all nodes first
     for node_id, node in tree.all_nodes.items():
-        # Shorten the displayed text
-        short_text = (node.text[:40] + '...') if len(node.text) > 40 else node.text
+        # Shorten the displayed text for readability
+        short_text = (node.text[:20] + '...') if len(node.text) > 20 else node.text
+        graph.add_node(node_id, label=short_text)
 
-        # Add node with short text and full text as title for tooltip
-        G.add_node(node_id, label=short_text, title=node.text)
-        print(f"Added node {node_id}: {short_text}")
+    # Add edges
+    graph.add_edges_from(edges)
 
-    # Add edges after all nodes have been added to ensure all references are valid
-    for node_id, node in tree.all_nodes.items():
-        if hasattr(node, 'children') and isinstance(node.children, set) and node.children:
-            print(f"Node {node_id} has children: {node.children}")
-            for child_id in node.children:
-                if child_id in G.nodes:
-                    G.add_edge(node_id, child_id)
-                    print(f"Added edge from {node_id} to {child_id}")
-                else:
-                    print(f"Warning: Child node {child_id} not found in graph nodes")
-
-    return G
+    return graph
 
 
 def main():
