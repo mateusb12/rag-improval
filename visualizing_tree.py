@@ -20,7 +20,7 @@ def tree_to_graph(tree):
     for node_id, node in tree.all_nodes.items():
         # Shorten the displayed text for readability
         short_text = (node.text[:20] + '...') if len(node.text) > 20 else node.text
-        graph.add_node(node_id, label=short_text)
+        graph.add_node(node_id, label=short_text, title=node.text)
 
     # Add edges
     graph.add_edges_from(edges)
