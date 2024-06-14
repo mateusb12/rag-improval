@@ -3,17 +3,12 @@ from raptor import RetrievalAugmentation
 import networkx as nx
 from pyvis.network import Network
 
-setup_openai_key()
 
-
-def tree_to_graph(tree, current_depth, max_depth):
+def tree_to_graph(tree):
     G = nx.DiGraph()
 
-    def add_nodes_edges(node_id, depth):
-        if depth > max_depth:
-            return
-        node = tree.all_nodes[node_id]
-
+    # Add all nodes first
+    for node_id, node in tree.all_nodes.items():
         # Shorten the displayed text
         short_text = (node.text[:40] + '...') if len(node.text) > 40 else node.text
 
@@ -21,35 +16,54 @@ def tree_to_graph(tree, current_depth, max_depth):
         G.add_node(node_id, label=short_text, title=node.text)
         print(f"Added node {node_id}: {short_text}")
 
-        if hasattr(node, 'children') and node.children:
+    # Add edges after all nodes have been added to ensure all references are valid
+    for node_id, node in tree.all_nodes.items():
+        if hasattr(node, 'children') and isinstance(node.children, set) and node.children:
+            print(f"Node {node_id} has children: {node.children}")
             for child_id in node.children:
-                G.add_edge(node_id, child_id)
-                print(f"Added edge from {node_id} to {child_id}")
-                add_nodes_edges(child_id, depth + 1)
+                if child_id in G.nodes:
+                    G.add_edge(node_id, child_id)
+                    print(f"Added edge from {node_id} to {child_id}")
+                else:
+                    print(f"Warning: Child node {child_id} not found in graph nodes")
 
-    add_nodes_edges(0, 1)  # Assuming root node has ID 0
     return G
 
 
-# Load the tree from the saved path
-SAVE_PATH = "demo/cinderella"
+def main():
+    setup_openai_key()
 
-# Assuming `RetrievalAugmentation` can load the tree directly
-RA = RetrievalAugmentation(tree=SAVE_PATH)
+    # Load the tree from the saved path
+    save_path = "demo/cinderella"
 
-# Set the desired tree depth
-TREE_DEPTH = 3
+    # Assuming `RetrievalAugmentation` can load the tree directly
+    ra = RetrievalAugmentation(tree=save_path)
 
-# Convert the tree to a NetworkX graph
-G = tree_to_graph(RA.tree, 1, TREE_DEPTH)
+    # Print the entire tree structure for debugging
+    def print_tree_structure(tree):
+        for node_id, node in tree.all_nodes.items():
+            print(f"Node {node_id}: {node.text}")
+            if hasattr(node, 'children') and isinstance(node.children, set):
+                print(f"  Children: {node.children}")
+            else:
+                print("  No children")
 
-# Create a Pyvis Network object
-net = Network(notebook=True, width="1000px", height="700px", bgcolor="#222222", font_color="white")
+    print_tree_structure(ra.tree)
 
-# Load the NetworkX graph into the Pyvis Network object
-net.from_nx(G)
+    # Convert the tree to a NetworkX graph
+    graph = tree_to_graph(ra.tree)
 
-# Save and show the interactive HTML file
-net.show("demo/cinderella_tree.html")
+    # Create a Pyvis Network object
+    net = Network(notebook=True, width="100%", height="750px", bgcolor="#222222", font_color="white")
 
-print("Interactive tree visualization saved as 'demo/cinderella_tree.html'")
+    # Load the NetworkX graph into the Pyvis Network object
+    net.from_nx(graph)
+
+    # Display the interactive network in the Jupyter notebook cell
+    net.show("demo/cinderella_tree.html")
+
+    print("Interactive tree visualization displayed in the Jupyter notebook.")
+
+
+if __name__ == "__main__":
+    main()
