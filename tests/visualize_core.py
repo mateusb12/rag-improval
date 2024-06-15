@@ -24,7 +24,7 @@ def format_text_for_plot(text: str) -> str:
     MAX_CHARS_PER_LINE = 80
     formatted_lines = []
     for line in lines:
-        while len(line) > MAX_CHARS_PER_LINE:
+        while (len(line) > MAX_CHARS_PER_LINE):
             formatted_lines.append(line[:MAX_CHARS_PER_LINE])
             line = line[MAX_CHARS_PER_LINE:]
         formatted_lines.append(line)
@@ -52,12 +52,8 @@ def create_visualization_figure(
         hoverinfo="text", opacity=0.8,
         text=[format_text_for_plot(label) for label in node_labels],
     )
-    fig.add_trace(
-        lines_scatter
-    )
-    fig.add_trace(
-        markers_scatter
-    )
+    fig.add_trace(lines_scatter)
+    fig.add_trace(markers_scatter)
 
     return fig
 
@@ -104,7 +100,7 @@ def visualize_tree_structure(start_node: Node, tree: Tree):
     graph = Graph()
     build_graph_from_tree(graph, start_node, tree)
 
-    layout = graph.layout("rt")
+    layout = graph.layout("rt", root=[0])
     positions = {i: layout[i] for i in range(graph.vcount())}
     heights = [layout[i][1] for i in range(graph.vcount())]
     max_height = max(heights)
