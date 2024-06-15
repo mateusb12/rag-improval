@@ -10,7 +10,7 @@ try:
 except ImportError as e:
     raise ImportError("`plotly` not installed. Please install using `pip install plotly`")
 
-try :
+try:
     from igraph import Graph, EdgeSeq
 except ImportError as e:
     raise ImportError("`igraph` not installed. Please install using `pip install igraph`.")
@@ -33,44 +33,37 @@ def format_text_for_plot(text: str) -> str:
 
 
 def create_visualization_figure(
-    edge_x_coords, edge_y_coords, node_x_coords, node_y_coords, node_labels
+        edge_x_coords, edge_y_coords, node_x_coords, node_y_coords, node_labels
 ):
     """
     Creates a Plotly figure for visualizing nodes and edges.
     """
     fig = go.Figure()
-    fig.add_trace(
-        go.Scatter(
-            x=edge_x_coords,
-            y=edge_y_coords,
-            mode="lines",
-            line=dict(color="rgb(210,210,210)", width=1),
-            hoverinfo="none",
+    lines_scatter = go.Scatter(x=edge_x_coords, y=edge_y_coords, mode="lines",
+                               line=dict(color="rgb(210,210,210)", width=1), hoverinfo="none")
+    marker_dict = dict(
+            symbol="circle-dot",
+            size=18,
+            color="#6175c1",
+            line=dict(color="rgb(50,50,50)", width=1),
         )
+    markers_scatter = go.Scatter(
+        x=node_x_coords, y=node_y_coords, mode="markers", name="nodes", marker=marker_dict,
+        hoverinfo="text", opacity=0.8,
+        text=[format_text_for_plot(label) for label in node_labels],
     )
     fig.add_trace(
-        go.Scatter(
-            x=node_x_coords,
-            y=node_y_coords,
-            mode="markers",
-            name="nodes",
-            marker=dict(
-                symbol="circle-dot",
-                size=18,
-                color="#6175c1",
-                line=dict(color="rgb(50,50,50)", width=1),
-            ),
-            text=[format_text_for_plot(label) for label in node_labels],
-            hoverinfo="text",
-            opacity=0.8,
-        )
+        lines_scatter
+    )
+    fig.add_trace(
+        markers_scatter
     )
 
     return fig
 
 
 def build_graph_from_tree(
-    graph: Graph, current_node: Node, tree: Tree, parent_node_id: int = -1
+        graph: Graph, current_node: Node, tree: Tree, parent_node_id: int = -1
 ) -> int:
     """
     Recursively builds a graph representation of the tree structure.

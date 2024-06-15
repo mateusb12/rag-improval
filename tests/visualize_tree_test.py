@@ -1,8 +1,16 @@
+import pickle
 import random, string
 from typing import List
 
 from raptor import Node, Tree
 from tests.visualize_core import visualize_tree_structure
+
+
+def load_tree(file_path):
+    """Load the tree from a pickled file."""
+    with open(file_path, "rb") as file:
+        tree_object = pickle.load(file)
+    return tree_object
 
 
 def prep():
@@ -26,7 +34,7 @@ def prep():
     # root -> layer_1_nodes
     # layer_1_node -> leaf_nodes
     def randomly_connect_nodes(
-        parent_nodes: List[Node], potential_children: List[Node]
+            parent_nodes: List[Node], potential_children: List[Node]
     ):
         for child in potential_children:
             parent_node = random.sample(parent_nodes, k=1)[0]
@@ -37,8 +45,8 @@ def prep():
 
     return Tree(
         all_nodes={idx: node for idx, node in enumerate(nodes)},
-        root_nodes={idx : node for idx, node in enumerate(root_nodes)},
-        leaf_nodes={idx : node for idx, node in enumerate(leaf_nodes)},
+        root_nodes={idx: node for idx, node in enumerate(root_nodes)},
+        leaf_nodes={idx: node for idx, node in enumerate(leaf_nodes)},
         num_layers=2,
         layer_to_nodes={"0": root_nodes, "1": layer_1_nodes, "2": leaf_nodes},
     )
