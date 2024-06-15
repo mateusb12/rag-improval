@@ -15,16 +15,36 @@ try:
 except ImportError as e:
     raise ImportError("`igraph` not installed. Please install using `pip install igraph`.")
 
+# Configuration Constants
+MAX_CHARS_PER_LINE = 80
+
+NODE_SHAPE = "circle-dot"
+NODE_SIZE = 35
+NODE_COLOR = "#6175c1"
+NODE_OUTLINE_COLOR = "#000000"
+NODE_OUTLINE_THICKNESS = 2
+
+FIGURE_LINE_COLOR = "rgb(210,210,210)"
+FIGURE_LINE_WIDTH = 1
+FIGURE_HOVER_INFO = "none"
+FIGURE_OPACITY = 0.8
+FIGURE_TITLE = "Tree Visualization"
+FIGURE_FONT_SIZE = 12
+FIGURE_MARGIN_LEFT = 40
+FIGURE_MARGIN_RIGHT = 40
+FIGURE_MARGIN_BOTTOM = 85
+FIGURE_MARGIN_TOP = 100
+PLOT_BACKGROUND_COLOR = "rgb(248,248,248)"
+
 
 def format_text_for_plot(text: str) -> str:
     """
     Formats text for plotting by splitting long lines into shorter ones.
     """
     lines = text.split("\n")
-    MAX_CHARS_PER_LINE = 80
     formatted_lines = []
     for line in lines:
-        while (len(line) > MAX_CHARS_PER_LINE):
+        while len(line) > MAX_CHARS_PER_LINE:
             formatted_lines.append(line[:MAX_CHARS_PER_LINE])
             line = line[MAX_CHARS_PER_LINE:]
         formatted_lines.append(line)
@@ -39,17 +59,20 @@ def create_visualization_figure(
     Creates a Plotly figure for visualizing nodes and edges.
     """
     fig = go.Figure()
-    lines_scatter = go.Scatter(x=edge_x_coords, y=edge_y_coords, mode="lines",
-                               line=dict(color="rgb(210,210,210)", width=1), hoverinfo="none")
+    lines_scatter = go.Scatter(
+        x=edge_x_coords, y=edge_y_coords, mode="lines",
+        line=dict(color=FIGURE_LINE_COLOR, width=FIGURE_LINE_WIDTH),
+        hoverinfo=FIGURE_HOVER_INFO
+    )
     marker_dict = dict(
-            symbol="circle-dot",
-            size=18,
-            color="#6175c1",
-            line=dict(color="rgb(50,50,50)", width=1),
-        )
+        symbol=NODE_SHAPE,
+        size=NODE_SIZE,
+        color=NODE_COLOR,
+        line=dict(color=NODE_OUTLINE_COLOR, width=NODE_OUTLINE_THICKNESS),
+    )
     markers_scatter = go.Scatter(
         x=node_x_coords, y=node_y_coords, mode="markers", name="nodes", marker=marker_dict,
-        hoverinfo="text", opacity=0.8,
+        hoverinfo="text", opacity=FIGURE_OPACITY,
         text=[format_text_for_plot(label) for label in node_labels],
     )
     fig.add_trace(lines_scatter)
@@ -129,8 +152,8 @@ def visualize_tree_structure(start_node: Node, tree: Tree):
     )
 
     fig.update_layout(
-        title="Tree Visualization",
-        font_size=12,
+        title=FIGURE_TITLE,
+        font_size=FIGURE_FONT_SIZE,
         showlegend=False,
         xaxis=dict(
             showline=False, zeroline=False, showgrid=False, showticklabels=False
@@ -138,9 +161,9 @@ def visualize_tree_structure(start_node: Node, tree: Tree):
         yaxis=dict(
             showline=False, zeroline=False, showgrid=False, showticklabels=False
         ),
-        margin=dict(l=40, r=40, b=85, t=100),
+        margin=dict(l=FIGURE_MARGIN_LEFT, r=FIGURE_MARGIN_RIGHT, b=FIGURE_MARGIN_BOTTOM, t=FIGURE_MARGIN_TOP),
         hovermode="closest",
-        plot_bgcolor="rgb(248,248,248)",
+        plot_bgcolor=PLOT_BACKGROUND_COLOR,
     )
 
     fig.show()
