@@ -40,7 +40,7 @@ def load_quality_dataset() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         with open(file_path, 'r', encoding='utf-8') as f:
             for line in f:
                 stripped_line = line.strip()
-                json_dict = ast.literal_eval(stripped_line)
+                json_dict = json.loads(stripped_line)
                 data.append(json_dict)
         df = pd.DataFrame(data)
         return df
@@ -54,6 +54,13 @@ def load_quality_dataset() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
 
 def main():
     qasper_dev, qasper_train = load_qasper_dataset()
+    narrative_df = load_narrative_qa_dataset()
+    quality_dev, quality_test, quality_train = load_quality_dataset()
+    df_pool = {"qasper_dev": qasper_dev, "qasper_train": qasper_train, "narrative_qa": narrative_df,
+               "quality_dev": quality_dev, "quality_test": quality_test, "quality_train": quality_train}
+    for label, df in df_pool.items():
+        csv_path = get_datasets_folder_path() / f"csvs/{label}.csv"
+        df.to_csv(csv_path, index=False)
     return
 
 
