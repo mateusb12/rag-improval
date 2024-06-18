@@ -1,6 +1,6 @@
 import pickle
 
-from path_reference import get_tree_pkl_path
+from path.path_reference import get_tree_pkl_path
 from raptor import Node, Tree
 from tests.visualize_core import visualize_tree_structure
 
