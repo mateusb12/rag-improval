@@ -52,9 +52,8 @@ def load_quality_dataset() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     return dev_file_df, test_file_df, train_file_df
 
 
-
 def main():
-    quality_dev, quality_test, quality_train = load_quality_dataset()
+    qasper_dev, qasper_train = load_qasper_dataset()
     return
 
 
