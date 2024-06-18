@@ -12,16 +12,17 @@ def load_tree(path):
     return tree_object
 
 
-# Load the tree from the pickled file
-file_path = get_tree_pkl_path()
-tree = load_tree(file_path)
+def visualize_tree_graph():
+    # Load the tree from the pickled file
+    file_path = get_tree_pkl_path()
+    tree = load_tree(file_path)
 
-# Now create a new root Node on top of all root nodes
-root_node = Node(
-    text="Root Node",  # You can replace this with an appropriate text for the root node
-    index=-1,
-    children=list(map(lambda x: x.index, tree.root_nodes.values())),
-    embeddings=[]
-)
+    # Now create a new root Node on top of all root nodes
+    root_node = Node(
+        text="Root Node",  # You can replace this with an appropriate text for the root node
+        index=-1,
+        children=list(map(lambda x: x.index, tree.root_nodes.values())),
+        embeddings=[]
+    )
 
-visualize_tree_structure(root_node, tree)
+    visualize_tree_structure(root_node, tree)
