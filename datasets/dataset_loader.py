@@ -8,22 +8,11 @@ from path.path_reference import get_datasets_folder_path
 
 
 def load_qasper_dataset() -> Tuple[pd.DataFrame, pd.DataFrame]:
-    # qasper_folder_path = get_datasets_folder_path() / 'qasper/'
-    # dev_file_path = qasper_folder_path / 'qasper-dev-v0.3.json'
-    # train_file_path = qasper_folder_path / 'qasper-train-v0.3.json'
-    #
-    # with open(dev_file_path, 'r') as f:
-    #     dev_data = json.load(f)
-    # with open(train_file_path, 'r') as f:
-    #     train_data = json.load(f)
-
-    dev_pool = []
-    for item in dev_data.values():
-        dev_pool.append(item)
-
-    dev_df = pd.json_normalize(dev_data)
-    train_df = pd.json_normalize(train_data)
-
+    qasper_folder_path = get_datasets_folder_path() / 'qasper/'
+    dev_file_path = qasper_folder_path / 'qasper_dev_normalized.csv'
+    train_file_path = qasper_folder_path / 'qasper_train_normalized.csv'
+    dev_df = pd.read_csv(dev_file_path)
+    train_df = pd.read_csv(train_file_path)
     return dev_df, train_df
 
 
