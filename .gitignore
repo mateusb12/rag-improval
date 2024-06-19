@@ -32,3 +32,4 @@ assertion.log
 *.log
 *.db
 /datasets/csvs/*.csv
+/datasets/qasper/*.csv

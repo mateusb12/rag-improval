@@ -8,14 +8,18 @@ from path.path_reference import get_datasets_folder_path
 
 
 def load_qasper_dataset() -> Tuple[pd.DataFrame, pd.DataFrame]:
-    qasper_folder_path = get_datasets_folder_path() / 'qasper/'
-    dev_file_path = qasper_folder_path / 'qasper-dev-v0.3.json'
-    train_file_path = qasper_folder_path / 'qasper-train-v0.3.json'
+    # qasper_folder_path = get_datasets_folder_path() / 'qasper/'
+    # dev_file_path = qasper_folder_path / 'qasper-dev-v0.3.json'
+    # train_file_path = qasper_folder_path / 'qasper-train-v0.3.json'
+    #
+    # with open(dev_file_path, 'r') as f:
+    #     dev_data = json.load(f)
+    # with open(train_file_path, 'r') as f:
+    #     train_data = json.load(f)
 
-    with open(dev_file_path, 'r') as f:
-        dev_data = json.load(f)
-    with open(train_file_path, 'r') as f:
-        train_data = json.load(f)
+    dev_pool = []
+    for item in dev_data.values():
+        dev_pool.append(item)
 
     dev_df = pd.json_normalize(dev_data)
     train_df = pd.json_normalize(train_data)
@@ -52,16 +56,21 @@ def load_quality_dataset() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     return dev_file_df, test_file_df, train_file_df
 
 
-def main():
+def save_to_csv(chunk_percentage: float = 0.1):
     qasper_dev, qasper_train = load_qasper_dataset()
     narrative_df = load_narrative_qa_dataset()
     quality_dev, quality_test, quality_train = load_quality_dataset()
     df_pool = {"qasper_dev": qasper_dev, "qasper_train": qasper_train, "narrative_qa": narrative_df,
                "quality_dev": quality_dev, "quality_test": quality_test, "quality_train": quality_train}
     for label, df in df_pool.items():
+        sampled_df = df.sample(frac=chunk_percentage, random_state=1)
         csv_path = get_datasets_folder_path() / f"csvs/{label}.csv"
-        df.to_csv(csv_path, index=False)
+        sampled_df.to_csv(csv_path, index=False)
     return
+
+
+def main():
+    save_to_csv()
 
 
 if __name__ == "__main__":
