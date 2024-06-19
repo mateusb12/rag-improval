@@ -28,6 +28,9 @@ def preprocess_and_split(
     if text_column not in df.columns:
         raise ValueError(f"Column '{text_column}' not found in DataFrame")
 
+    # Handle missing values in the text column
+    df[text_column] = df[text_column].fillna('')
+
     # Tokenize the text column
     df[text_column] = df[text_column].apply(tokenize_text)
 
@@ -41,6 +44,7 @@ def preprocess_and_split(
     val_df, test_df = train_test_split(temp_df, test_size=val_relative_size, random_state=random_state)
 
     return train_df, val_df, test_df
+
 
 
 def save_datasets(train_df: pd.DataFrame, val_df: pd.DataFrame, test_df: pd.DataFrame, dataset_name: str):

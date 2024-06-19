@@ -6,8 +6,8 @@
 - [x] Ensure you have access to the full text of the papers and stories in these datasets.
 
 ### Preprocessing:
-- [ ] Tokenize the text data.
-- [ ] Split the data into training, validation, and test sets.
+- [x] Tokenize the text data.
+- [x] Split the data into training, validation, and test sets.
 
 ### Model Training:
 - [ ] Train the RAPTOR model using the tree structure and the language model of your choice (e.g., GPT-4).

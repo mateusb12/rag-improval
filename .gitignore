@@ -33,3 +33,4 @@ assertion.log
 *.db
 /datasets/csvs/*.csv
 /datasets/qasper/*.csv
+/project_utils/commit_changes_generator/commit_changes.diff
