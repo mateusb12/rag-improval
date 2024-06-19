@@ -16,6 +16,7 @@ def get_datasets_folder_path():
 def main():
     root_folder = get_tree_pkl_path()
     print(root_folder)
+    return
 
 
 if __name__ == '__main__':
